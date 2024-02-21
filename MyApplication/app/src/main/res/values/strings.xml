@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="id">ID:</string>
+    <string name="valeur_0">Valeur: 0</string>
+    <string name="logs">Logs</string>
+    <string name="todo">TODO</string>
+</resources>

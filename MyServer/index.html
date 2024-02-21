@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Socket.IO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Test</h1>
+
+    <div>
+        <h3>User ID: <span id="userId"></span></h3>
+    </div>
+
+    <div>
+        <h3>Slider Value: <span id="sliderValue">0</span></h3>
+        <input type="range" id="slider" min="0" max="100" value="0">
+    </div>
+
+    <div>
+        <h3>Logs:</h3>
+        <div id="logs"></div>
+    </div>
+
+    <script>
+        // Connecter au serveur Socket.IO
+        const socket = io("http://web-dev.freeboxos.fr:50000/");
+
+        // Élément DOM pour afficher l'ID utilisateur
+        const userIdElement = document.getElementById('userId');
+
+        // Élément DOM pour afficher la valeur du slider
+        const sliderValueElement = document.getElementById('sliderValue');
+
+        // Élément DOM pour afficher les logs
+        const logsElement = document.getElementById('logs');
+
+        // Élément DOM du slider
+        const sliderElement = document.getElementById('slider');
+
+        // Écouter l'événement 'userId'
+        socket.on('userId', (userId) => {
+            userIdElement.innerText = userId;
+            addLog(`ID utilisateur reçu : ${userId}`);
+        });
+
+        // Écouter l'événement 'sliderValueChanged'
+        socket.on('sliderValueChanged', (value) => {
+            sliderElement.value = value;
+            sliderValueElement.innerText = value;
+            addLog(`Valeur du slider mise à jour par un autre client : ${value}`);
+        });
+
+        // Événement onChange pour le slider
+        sliderElement.addEventListener('input', (e) => {
+            const value = e.target.value;
+            socket.emit('sliderValueChanged', value);
+            sliderValueElement.innerText = value;
+            addLog(`Valeur du slider modifiée : ${value}`);
+        });
+
+        // Fonction pour ajouter des logs
+        function addLog(message) {
+            const logEntry = document.createElement('div');
+            logEntry.innerText = message;
+            logsElement.appendChild(logEntry);
+        }
+    </script>
+</body>
+</html>
